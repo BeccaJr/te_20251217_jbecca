@@ -11,10 +11,10 @@ te:
     dev:
       type: snowflake
       account: dz46997.us-east-1
-      user: te_sjobs!!!UPDATE!!!
+      user: te_jbecca
       password: 1MoreThing!
-      role: te_role_sjobs!!!UPDATE!!!
+      role: te_role_jbecca
       database: te_analytics
       warehouse: test_wh
-      schema: te_sjobs!!!UPDATE!!!
+      schema: te_jbecca
       threads: 4
