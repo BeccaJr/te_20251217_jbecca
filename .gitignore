@@ -1,0 +1,8 @@
+
+target/
+dbt_modules/
+logs/
+dbt_packages/
+
+profiles.yml
+answer_key.md

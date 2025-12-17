@@ -1,0 +1,20 @@
+# NOTE: This file needs to be placed in your home directory under the .dbt folder
+# For example, in Linux/Mac place this under ~/.dbt/profiles.yml
+# in Windows place this under C:\Users\your_user\.dbt\profiles.yml
+# Enter your assigned user name below where indicated.
+# If your assigned user is TE_USER1, use this for the user, role, and schema.
+
+
+te:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: dz46997.us-east-1
+      user: te_sjobs!!!UPDATE!!!
+      password: 1MoreThing!
+      role: te_role_sjobs!!!UPDATE!!!
+      database: te_analytics
+      warehouse: test_wh
+      schema: te_sjobs!!!UPDATE!!!
+      threads: 4
