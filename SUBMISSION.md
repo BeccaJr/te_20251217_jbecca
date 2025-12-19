@@ -1,10 +1,10 @@
 # Technical Exercise Submission
 
-**Candidate Name:** [Your Name]
+**Candidate Name:** José Celso Becca Júnior
 
 **Submission Date:** [YYYY-MM-DD]
 
-**GitHub Repository:** [Repository URL]
+**GitHub Repository:** https://github.com/BeccaJr
 
 ---
 
@@ -32,21 +32,48 @@
 
 **Query:**
 ```sql
--- Your SQL query here
+WITH
+BASE AS (
+    SELECT 
+        M.MSA
+        , COUNT(DISTINCT(S.DECODED_ID)) AS UNIQUE_SCOOTER_COUNT
+    FROM 
+        TE_ANALYTICS.BI.SCOOTERS_PARSED S
+    INNER JOIN 
+        TE_ANALYTICS.BI.US_HEX7_MSA M
+    ON
+        S.HEX7 = M.HEX7
+    WHERE
+        DATE(EXTRACTED_AT) BETWEEN '2020-01-01' AND '2020-01-31'
+    GROUP BY
+        M.MSA
+)
+SELECT
+    MSA
+    , UNIQUE_SCOOTER_COUNT
+    , SUM(UNIQUE_SCOOTER_COUNT) OVER() AS TOTAL_SCOOTER_COUNT
+    , UNIQUE_SCOOTER_COUNT / SUM(UNIQUE_SCOOTER_COUNT) OVER() AS UNIQUE_SCOOTER_PERC
+    , RANK() OVER(ORDER BY UNIQUE_SCOOTER_COUNT DESC) AS RANK
+FROM
+    BASE
+QUALIFY
+    RANK <= 3
+ORDER BY
+    RANK
 ```
 
 **Results (Top 3 MSAs, ordered by RANK ASC):**
 
-| Row | MSA | UNIQUE_SCOOTER_COUNT | TOTAL_SCOOTER_COUNT | UNIQUE_SCOOTER_PERC | RANK |
-| --- | --- | --- | --- | --- | --- |
-| 1   |     |     |     |     |     |
-| 2   |     |     |     |     |     |
-| 3   |     |     |     |     |     |
+| MSA                                          | UNIQUE_SCOOTER_COUNT | TOTAL_SCOOTER_COUNT | UNIQUE_SCOOTER_PERC | RANK |
+|----------------------------------------------|----------------------|---------------------|---------------------|------|
+| Austin-Round Rock-Georgetown, TX             | 7688                 | 41362               | 0.185871            | 1    |
+| Washington-Arlington-Alexandria, DC-VA-MD-WV | 7255                 | 41362               | 0.175403            | 2    |
+| Atlanta-Sandy Springs-Alpharetta, GA         | 7099                 | 41362               | 0.171631            | 3    |
 
 *Note: TOTAL_SCOOTER_COUNT represents the total unique scooters across all MSAs for the time period*
 
 **Notes (optional):**
-*Add any relevant comments about assumptions, data quality issues, or edge cases encountered*
+*UNIQUE_SCOOTER_PERC is expressed on a 0–1 scale and represents the share of unique scooters in each MSA relative to the total unique scooters observed during January 2020.*
 
 ---
 
@@ -56,26 +83,56 @@
 
 **Query:**
 ```sql
--- Your SQL query here
+WITH
+BASE AS (
+    SELECT 
+        M.MSA
+        , COUNT(DISTINCT(S.DECODED_ID)) AS UNIQUE_SCOOTER_COUNT
+    FROM 
+        TE_ANALYTICS.BI.SCOOTERS_PARSED S
+    INNER JOIN 
+        TE_ANALYTICS.BI.US_HEX7_MSA M
+    ON
+        S.HEX7 = M.HEX7
+    WHERE
+        DATE(EXTRACTED_AT) = '2020-03-03'
+    GROUP BY
+        M.MSA
+)
+SELECT
+    UNIQUE_SCOOTER_COUNT
+    , MSA
+    , RANK() OVER(ORDER BY UNIQUE_SCOOTER_COUNT DESC) AS RANK
+FROM
+    BASE
+ORDER BY
+    RANK
 ```
 
 **Results (All MSAs, ordered by MSA_RANK ASC):**
 
-| Row | UNIQUE_SCOOTERS_COUNT | MSA | MSA_RANK |
-| --- | --- | --- | --- |
-| 1   |     |     |     |
-| 2   |     |     |     |
-| 3   |     |     |     |
-| 4   |     |     |     |
-| 5   |     |     |     |
-| 6   |     |     |     |
-| 7   |     |     |     |
-| 8   |     |     |     |
-| 9   |     |     |     |
-| 10  |     |     |     |
-
-**Notes (optional):**
-*Add any relevant comments about assumptions, data quality issues, or edge cases encountered*
+| UNIQUE_SCOOTER_COUNT | MSA                                            | RANK |
+|----------------------|------------------------------------------------|------|
+| 3545                 | Austin-Round Rock-Georgetown, TX               | 1    |
+| 3432                 | Miami-Fort Lauderdale-Pompano Beach, FL        | 2    |
+| 2595                 | San Francisco-Oakland-Berkeley, CA             | 3    |
+| 2371                 | Washington-Arlington-Alexandria, DC-VA-MD-WV   | 4    |
+| 2088                 | Atlanta-Sandy Springs-Alpharetta, GA           | 5    |
+| 1433                 | Dallas-Fort Worth-Arlington, TX                | 6    |
+| 1233                 | New York-Newark-Jersey City, NY-NJ-PA          | 7    |
+| 982                  | Sacramento-Roseville-Folsom, CA                | 8    |
+| 963                  | Tampa-St. Petersburg-Clearwater, FL            | 9    |
+| 722                  | Baltimore-Columbia-Towson, MD                  | 10   |
+| 580                  | Nashville-Davidson--Murfreesboro--Franklin, TN | 11   |
+| 549                  | Richmond, VA                                   | 12   |
+| 296                  | Columbus, OH                                   | 13   |
+| 246                  | Salt Lake City, UT                             | 14   |
+| 245                  | Portland-Vancouver-Hillsboro, OR-WA            | 15   |
+| 197                  | Charlotte-Concord-Gastonia, NC-SC              | 16   |
+| 191                  | Boise City, ID                                 | 17   |
+| 125                  | Harrisonburg, VA                               | 18   |
+| 99                   | Cincinnati, OH-KY-IN                           | 19   |
+| 13                   | Roanoke, VA                                    | 20   |
 
 ---
 
@@ -85,46 +142,76 @@
 
 **Query:**
 ```sql
--- Your SQL query here
+WITH
+BASE AS (
+    SELECT 
+        S.PROVIDER
+        , DATE(S.EXTRACTED_AT) AS DATE
+        , COUNT(DISTINCT(S.DECODED_ID)) AS PROVIDER_SCOOTERS
+    FROM
+        TE_ANALYTICS.BI.SCOOTERS_PARSED S
+    INNER JOIN 
+        TE_ANALYTICS.BI.US_HEX7_MSA M
+    ON
+        S.HEX7 = M.HEX7
+    WHERE
+        M.MSA ILIKE '%Washington%'
+    AND
+        DATE(S.EXTRACTED_AT) BETWEEN '2020-01-01' AND '2020-12-31'
+    GROUP BY
+        S.PROVIDER
+        , DATE
+)
+SELECT
+    PROVIDER_SCOOTERS / SUM(PROVIDER_SCOOTERS) OVER(PARTITION BY DATE) AS PERC_SHARE
+    , PROVIDER
+    , DATE
+FROM
+    BASE
+ORDER BY
+    DATE ASC
+    , PROVIDER DESC
 ```
 
 **Visualization:**
 
-![Provider Share Chart](./images/your_image.png)
+![Provider Share Chart] (./images/provider_share_dc_2020.png)
 
 *Note: Place your visualization image in an `images/` folder in the repository and update the link above*
 
-**Total Rows Returned:** [Enter total count]
+*Note: Percentages are expressed on a 0–1 scale in the underlying data and shown as percentages in the visualization. Each column represents the distribution of unique scooters by provider for a single day within the Washington, DC MSA.*
+
+**Total Rows Returned:** 316
 
 **First 10 Rows (ordered by DATE ASC, PROVIDER DESC):**
 
-| PERC_SHARE | PROVIDER | DATE |
-| --- | --- | --- |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
+| PERC_SHARE | PROVIDER     | DATE       |
+|------------|--------------|------------|
+| 0.162045   | revel        | 2020-01-25 |
+| 0.249048   | jump         | 2020-01-25 |
+| 0.021751   | boltmobility | 2020-01-25 |
+| 0.567156   | bird         | 2020-01-25 |
+| 0.165034   | revel        | 2020-01-26 |
+| 0.260959   | jump         | 2020-01-26 |
+| 0.023724   | boltmobility | 2020-01-26 |
+| 0.550284   | bird         | 2020-01-26 |
+| 0.166240   | revel        | 2020-01-27 |
+| 0.270077   | jump         | 2020-01-27 |
 
 **Last 10 Rows (ordered by DATE ASC, PROVIDER DESC):**
 
-| PERC_SHARE | PROVIDER | DATE |
-| --- | --- | --- |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
-|     |     |     |
+| PERC_SHARE | PROVIDER     | DATE       |
+|------------|--------------|------------|
+| 0.060117   | boltmobility | 2020-04-14 |
+| 0.411303   | revel        | 2020-04-15 |
+| 0.532182   | jump         | 2020-04-15 |
+| 0.056515   | boltmobility | 2020-04-15 |
+| 0.388060   | revel        | 2020-04-16 |
+| 0.562189   | jump         | 2020-04-16 |
+| 0.049751   | boltmobility | 2020-04-16 |
+| 0.459235   | revel        | 2020-04-17 |
+| 0.482529   | jump         | 2020-04-17 |
+| 0.058236   | boltmobility | 2020-04-17 |
 
 **Notes (optional):**
 *Add any relevant comments about assumptions, data quality issues, or edge cases encountered*
