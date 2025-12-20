@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: scooters
+    database: TE_RAW
+    schema: SCOOTERS
+    description: "Raw scooter data stored in Snowflake."
+
+    tables:
+      - name: SCOOTER_LOCATIONS
+        description: "Raw location-level data for scooter rides."
+
+      - name: US_HEX7_MSA
+        description: "US hexagonal grid data at resolution 7, aggregated by MSA."

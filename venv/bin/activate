@@ -67,3 +67,7 @@ fi
 if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
     hash -r 2> /dev/null
 fi
+# Auto-load dbt env vars
+if [ -f ".env" ]; then
+  export $(cat .env | xargs)
+fi
