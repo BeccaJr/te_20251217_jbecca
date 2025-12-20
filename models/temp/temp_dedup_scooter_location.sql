@@ -8,7 +8,7 @@ WITH ranked AS (
         ROW_NUMBER() OVER (
             PARTITION BY decoded_id, extracted_at
             ORDER BY extracted_at DESC
-        ) AS rn
+        ) AS rank
     FROM {{ ref('stg_scooter_location') }}
 )
 SELECT
@@ -16,4 +16,4 @@ SELECT
 FROM 
     ranked
 WHERE 
-    rn = 1
+    rank = 1
