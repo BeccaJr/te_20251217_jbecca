@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: fact_provider_msa_day
+    columns:
+      - name: provider_msa_day_sk
+        description: "primary key for fact_provider_msa_day"
+        tests:
+          - not_null
+          - unique
+
+      - name: msa
+        description: "Metropolitan Statistical Area"
+
+      - name: provider
+        description: "Name of the scooter provider"
+
+      - name: date
+        description: "Date of the record"
+
+      - name: count_scooters
+        description: "Count of scooters available for the provider in the MSA on the given date"
