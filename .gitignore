@@ -7,3 +7,5 @@ dbt_packages/
 profiles.yml
 answer_key.md
 .env
+
+dbt_packages/
