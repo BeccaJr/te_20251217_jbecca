@@ -39,6 +39,9 @@ models:
     # Applies to all files under models/staging/
     staging:
       +materialized: view
+    # Applies to all files under models/temp/
+    temp:
+      +materialized: view
     # Applies to all files under models/marts/
     marts:
       +materialized: table
