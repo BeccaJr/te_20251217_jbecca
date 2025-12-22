@@ -1,22 +1,65 @@
 {{ config(
-    tags=['fact', 'marts']
+    tags=['fact', 'marts', 'q1']
 ) }}
 
+WITH
+scooters_locations AS (
+    SELECT
+        provider
+        , decoded_id
+        , hex_7
+        , DATE(extracted_at) AS date
+    FROM
+        {{ ref('tmp_dedup_scooter_locations') }}
+)
+, msa_mapping AS (
+    SELECT
+        hex_7
+        , msa
+    FROM
+        {{ ref('stg_us_hex7_msa') }}
+)
+, scooter_msa AS (
+    SELECT
+        sl.provider
+        , sl.decoded_id
+        , sl.date
+        , mm.msa
+    FROM
+        scooters_locations sl
+    INNER JOIN
+        msa_mapping mm
+    ON
+        sl.hex_7 = mm.hex_7
+)
+, grouping AS (
+    SELECT
+        provider
+        , msa
+        , date
+        , COUNT(DISTINCT decoded_id) AS count_scooters
+    FROM
+        scooter_msa
+    GROUP BY
+        provider
+        , msa
+        , date
+)
+, final AS (
+    SELECT
+        {{ dbt_utils.generate_surrogate_key([
+            "msa",
+            "provider",
+            "date"
+        ]) }} AS provider_msa_day_sk
+        , msa
+        , provider
+        , date
+        , count_scooters
+    FROM
+        grouping
+)
 SELECT
-    {{ dbt_utils.generate_surrogate_key([
-        "m.msa",
-        "s.provider",
-        "DATE(s.extracted_at)"
-    ]) }} AS provider_msa_day_sk
-    , m.msa
-    , s.provider
-    , DATE(s.extracted_at) AS date
-    , COUNT(DISTINCT s.decoded_id) AS count_scooters
+    *
 FROM
-    {{ ref('temp_dedup_scooter_location') }} s
-INNER JOIN
-    {{ ref('stg_us_hex7_msa') }} m
-ON
-    s.hex_7 = m.hex_7
-GROUP BY
-    1, 2, 3, 4
+    final

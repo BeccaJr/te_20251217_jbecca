@@ -33,14 +33,11 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 models:
   tech_exercise:
-    # Applies to all files under models/example/
-    example:
-      +materialized: view
     # Applies to all files under models/staging/
     staging:
       +materialized: view
     # Applies to all files under models/temp/
-    temp:
+    tmp:
       +materialized: view
     # Applies to all files under models/marts/
     marts:
