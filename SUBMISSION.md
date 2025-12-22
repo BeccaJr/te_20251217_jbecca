@@ -2,7 +2,7 @@
 
 **Candidate Name:** José Celso Becca Júnior
 
-**Submission Date:** [2025-12-22]
+**Submission Date:** 2025-12-22
 
 **GitHub Repository:** https://github.com/BeccaJr/te_20251217_jbecca
 
@@ -173,7 +173,7 @@ ORDER BY
 
 **Visualization:**
 
-![Provider Share Chart] https://github.com/BeccaJr/te_20251217_jbecca/blob/main/images/provider_share_dc_2020.png
+*Image Link:* https://github.com/BeccaJr/te_20251217_jbecca/blob/main/images/provider_share_dc_2020.png
 
 *Note: Place your visualization image in an `images/` folder in the repository and update the link above*
 
@@ -212,11 +212,9 @@ ORDER BY
 | 0.058236   | boltmobility | 2020-04-17 |
 
 **Notes (optional):**
-*
 - The analysis reflects the actual availability of data for the Washington, DC MSA in 2020, which spans from late January to mid-April based on the underlying dataset.
 - Scooter share is defined as the daily count of unique scooters per provider divided by the total number of scooters observed in the MSA on the same day, ensuring that each day sums to 100%.
 - Scooters located outside U.S. MSAs are implicitly excluded through the join with the US_HEX7_MSA mapping table.
-*
 
 ---
 
@@ -229,9 +227,9 @@ ORDER BY
 **Model Name:** `fct_provider_msa_day.sql`
 
 **Approach/Logic:**
-*The raw scooter location data was first normalized in staging models, extracting relevant fields from the semi-structured JSON. A temporary deduplication model was introduced to ensure a single scooter reading per scooter per timestamp using a window function.
+The raw scooter location data was first normalized in staging models, extracting relevant fields from the semi-structured JSON. A temporary deduplication model was introduced to ensure a single scooter reading per scooter per timestamp using a window function.
 
-The final fact model aggregates the deduplicated data at the grain of provider, MSA, and day, counting distinct scooters per group.*
+The final fact model aggregates the deduplicated data at the grain of provider, MSA, and day, counting distinct scooters per group.
 
 **Top 5 Rows (ordered by COUNT_SCOOTER DESC, DATE DESC):**
 
@@ -252,9 +250,9 @@ The final fact model aggregates the deduplicated data at the grain of provider, 
 **Model Name:** `fct_company_msa_avg_disp_monthly.sql`
 
 **Approach/Logic:**
-*Daily displacement was calculated as the distance between the first and last recorded scooter position per scooter per day, using Snowflake’s ST_DISTANCE function.
+Daily displacement was calculated as the distance between the first and last recorded scooter position per scooter per day, using Snowflake’s ST_DISTANCE function.
 
-Daily displacement values were then averaged at the monthly level by provider and MSA to produce the final fact table.*
+Daily displacement values were then averaged at the monthly level by provider and MSA to produce the final fact table.
 
 **Top 5 Rows (ordered by AVERAGE_DISPLACEMENT DESC):**
 
@@ -270,12 +268,10 @@ Daily displacement values were then averaged at the monthly level by provider an
 
 ## Additional Notes
 
-*
 - Assumed that a scooter belongs to a single MSA per day based on its hex7 location.
 - Displacement is calculated using first and last observed positions per scooter per day.
 - Records outside US MSAs are excluded via the US_HEX7_MSA join.
 - dbt documentation screenshots (lineage and final models) are included in the `images/` directory.
-*
 
 ---
 
