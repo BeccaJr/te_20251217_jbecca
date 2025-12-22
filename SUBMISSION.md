@@ -227,17 +227,19 @@ ORDER BY
 **Model Name:** `fct_provider_msa_day.sql`
 
 **Approach/Logic:**
-*Describe your data model design: staging models used, deduplication logic, grain of final model*
+*The raw scooter location data was first normalized in staging models, extracting relevant fields from the semi-structured JSON. A temporary deduplication model was introduced to ensure a single scooter reading per scooter per timestamp using a window function.
+
+The final fact model aggregates the deduplicated data at the grain of provider, MSA, and day, counting distinct scooters per group.*
 
 **Top 5 Rows (ordered by COUNT_SCOOTER DESC, DATE DESC):**
 
-| MSA | PROVIDER | DATE | COUNT_SCOOTER |
-| --- | --- | --- | --- |
-| 1   |     |     |     |
-| 2   |     |     |     |
-| 3   |     |     |     |
-| 4   |     |     |     |
-| 5   |     |     |     |
+| PROVIDER_MSA_DAY_SK              | MSA                                | PROVIDER | DATE       | COUNT_SCOOTERS |
+|----------------------------------|------------------------------------|----------|------------|----------------|
+| 75b679b4c812473e9bd9726865e36a64 | Los Angeles-Long Beach-Anaheim, CA | bird     | 2020-03-10 | 6320           |
+| 744159e26699756142b51a265205ab48 | Los Angeles-Long Beach-Anaheim, CA | bird     | 2020-02-16 | 4564           |
+| fcd076506319482dc61f4352949c80b4 | Los Angeles-Long Beach-Anaheim, CA | bird     | 2020-03-08 | 4155           |
+| e149efc4796188c62c6eff137a642217 | Los Angeles-Long Beach-Anaheim, CA | bird     | 2020-02-07 | 3841           |
+| def887e36e36434bfbd3beda99589994 | Los Angeles-Long Beach-Anaheim, CA | bird     | 2020-03-05 | 3675           |
 
 ---
 
