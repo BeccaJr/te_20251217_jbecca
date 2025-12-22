@@ -2,15 +2,13 @@
 
 **Candidate Name:** José Celso Becca Júnior
 
-**Submission Date:** [YYYY-MM-DD]
+**Submission Date:** [2025-12-22]
 
-**GitHub Repository:** https://github.com/BeccaJr
+**GitHub Repository:** https://github.com/BeccaJr/te_20251217_jbecca
 
 ---
 
 > **⚠️ IMPORTANT: This file must be edited using a text editor (e.g., VS Code, Sublime Text, vim, nano, etc.). Add your answers to this file and commit it to the repository.**
-
-
 
 ---
 
@@ -175,7 +173,7 @@ ORDER BY
 
 **Visualization:**
 
-![Provider Share Chart] (./images/provider_share_dc_2020.png)
+![Provider Share Chart] https://github.com/BeccaJr/te_20251217_jbecca/blob/main/images/provider_share_dc_2020.png
 
 *Note: Place your visualization image in an `images/` folder in the repository and update the link above*
 
@@ -214,7 +212,11 @@ ORDER BY
 | 0.058236   | boltmobility | 2020-04-17 |
 
 **Notes (optional):**
-*Add any relevant comments about assumptions, data quality issues, or edge cases encountered*
+*
+- The analysis reflects the actual availability of data for the Washington, DC MSA in 2020, which spans from late January to mid-April based on the underlying dataset.
+- Scooter share is defined as the daily count of unique scooters per provider divided by the total number of scooters observed in the MSA on the same day, ensuring that each day sums to 100%.
+- Scooters located outside U.S. MSAs are implicitly excluded through the join with the US_HEX7_MSA mapping table.
+*
 
 ---
 
@@ -250,37 +252,40 @@ The final fact model aggregates the deduplicated data at the grain of provider, 
 **Model Name:** `fct_company_msa_avg_disp_monthly.sql`
 
 **Approach/Logic:**
-*Describe your approach: how you calculated displacement, how you aggregated to monthly averages, which Snowflake distance function used*
+*Daily displacement was calculated as the distance between the first and last recorded scooter position per scooter per day, using Snowflake’s ST_DISTANCE function.
+
+Daily displacement values were then averaged at the monthly level by provider and MSA to produce the final fact table.*
 
 **Top 5 Rows (ordered by AVERAGE_DISPLACEMENT DESC):**
 
-| MSA | PROVIDER | MONTH | AVERAGE_DISPLACEMENT |
-| --- | --- | --- | --- |
-| 1   |     |     |     |
-| 2   |     |     |     |
-| 3   |     |     |     |
-| 4   |     |     |     |
-| 5   |     |     |     |
+| COMPANY_MSA_MONTH_SK             | MSA                                   | PROVIDER | MONTH      | AVERAGE_DISPLACEMENT |
+|----------------------------------|---------------------------------------|----------|------------|----------------------|
+| e610f6d7af554434a26de0bb3f539e46 | San Francisco-Oakland-Berkeley, CA    | scoot    | 2020-02-01 | 2205.99143442        |
+| c97fb2379b00107cb2c45a85a2b24105 | San Francisco-Oakland-Berkeley, CA    | scoot    | 2020-01-01 | 2125.074249897       |
+| 90eb8d95da9bd6cf683000a7c2063d52 | New York-Newark-Jersey City, NY-NJ-PA | revel    | 2020-01-01 | 2054.144284918       |
+| 3d61d9d3149284d48594a9d8fc60ec71 | New York-Newark-Jersey City, NY-NJ-PA | revel    | 2020-02-01 | 1984.372330372       |
+| 6ab463391887a7aa78c5fe821573ae1c | San Francisco-Oakland-Berkeley, CA    | scoot    | 2020-03-01 | 1937.497521407       |
 
 ---
 
 ## Additional Notes
 
-*Use this section to add any clarifications, assumptions, or explanations about your approach:*
-
--
--
--
+*
+- Assumed that a scooter belongs to a single MSA per day based on its hex7 location.
+- Displacement is calculated using first and last observed positions per scooter per day.
+- Records outside US MSAs are excluded via the US_HEX7_MSA join.
+- dbt documentation screenshots (lineage and final models) are included in the `images/` directory.
+*
 
 ---
 
 ## Checklist Before Submission
 
-- [ ] All SQL queries formatted and tested
-- [ ] All result markdown tables populated
-- [ ] Visualization for SQL Question 3 created and linked
-- [ ] All dbt models pushed to GitHub
-- [ ] All dbt tests passing (`dbt test` runs without errors)
-- [ ] dbt documentation screenshot added to repository
-- [ ] This SUBMISSION.md file completed and pushed to GitHub
-- [ ] Repository is clean (no unnecessary files, no credentials)
+- [x] All SQL queries formatted and tested
+- [x] All result markdown tables populated
+- [x] Visualization for SQL Question 3 created and linked
+- [x] All dbt models pushed to GitHub
+- [x] All dbt tests passing (`dbt test` runs without errors)
+- [x] dbt documentation screenshot added to repository
+- [x] This SUBMISSION.md file completed and pushed to GitHub
+- [x] Repository is clean (no unnecessary files, no credentials)

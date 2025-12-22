@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: fact_provider_msa_day
+  - name: fct_provider_msa_day
     columns:
       - name: provider_msa_day_sk
         description: "primary key for fact_provider_msa_day"

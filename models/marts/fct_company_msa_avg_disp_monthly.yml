@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: fct_company_msa_avg_disp_monthly
+    columns:
+      - name: company_msa_month_sk
+        description: "primary key for fact_company_msa_avg_disp_monthly"
+        tests:
+          - not_null
+          - unique
+          
+      - name: msa
+        description: "Metropolitan Statistical Area"
+
+      - name: provider
+        description: "Name of the scooter provider"
+
+      - name: month
+        description: "Month of the record"
+
+      - name: average_displacement
+        description: "Average displacement of scooters in the given MSA for the month"

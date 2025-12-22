@@ -1,5 +1,5 @@
 {{ config(
-    tags=['temp']
+    tags=['temp', 'q1']
 ) }}
 
 WITH ranked AS (
@@ -9,7 +9,7 @@ WITH ranked AS (
             PARTITION BY decoded_id, extracted_at
             ORDER BY extracted_at DESC
         ) AS rank
-    FROM {{ ref('stg_scooter_location') }}
+    FROM {{ ref('stg_scooter_locations') }}
 )
 SELECT
     *
